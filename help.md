@@ -1,4 +1,4 @@
-## Installation Nestjs Framework
+##  Nestjs Config
 Creating a new project with the Nest CLI is recommended for first-time users. We'll continue with this approach in [First Steps](https://docs.nestjs.com/first-steps).
 
 After creating the project we need to make configuration
@@ -74,6 +74,21 @@ bootstrap();
 ```
  
 
+ ## Validation
+
+Nest works well with the class-validator library. we need to install libraries
+```bash
+npm i --save class-validator class-transformer
+```
+
+
+## Swagger
+to install swagger run this command ```bash  npm install --save @nestjs/swagger ```
+
+
+
 
 #### Help Links
 [Nestjs/config](https://javascript.plainenglish.io/nestjs-how-to-store-read-and-validate-environment-variable-using-nestjs-config-40a5fa0702e4)
+
+[validation pipes](https://docs.nestjs.com/pipes)
