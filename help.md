@@ -36,7 +36,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
-export class MyService {
+export class AppService {
   constructor(private configService: ConfigService) {}
 
   getDatabaseUrl(): string {
@@ -72,29 +72,8 @@ async function bootstrap() {
 
 bootstrap();
 ```
+ 
 
-In the example above, we're first creating an instance of the AppModule using the NestFactory.create() method. We then use the app.get() method to get an instance of the ConfigService, which we can use to retrieve the value of the PORT configuration variable.
-
-Note that this assumes that you've already imported the ConfigModule into your AppModule as described in my previous answer. If you haven't done so already, you'll need to add the following import statement to the top of your AppModule file:
-
-```typescript
-import { ConfigModule } from '@nestjs/config';
-```
-
-and then import it into your AppModule's imports array like this:
-
-```typescript
-@Module({
-  imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-    }),
-  ],
-  controllers: [AppController],
-  providers: [AppService],
-})
-export class AppModule {}
-```
 
 #### Help Links
 [Nestjs/config](https://javascript.plainenglish.io/nestjs-how-to-store-read-and-validate-environment-variable-using-nestjs-config-40a5fa0702e4)
