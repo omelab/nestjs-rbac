@@ -30,4 +30,4 @@ export class AppModule {}
 
 
 #### Help Links
-[nestjs/config help](https://javascript.plainenglish.io/nestjs-how-to-store-read-and-validate-environment-variable-using-nestjs-config-40a5fa0702e4)
+[Nestjs/config](https://javascript.plainenglish.io/nestjs-how-to-store-read-and-validate-environment-variable-using-nestjs-config-40a5fa0702e4)
