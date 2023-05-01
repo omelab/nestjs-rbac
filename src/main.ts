@@ -14,11 +14,11 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.use(helmet());
-  app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
-
   const configService = app.get(ConfigService);
   const port: number = configService.get<number>('PORT');
+
+  app.use(helmet());
+  app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
 
   if (process.env.NODE_ENV === 'development') {
     app.enableCors({
@@ -73,6 +73,7 @@ async function bootstrap() {
   await app.listen(port);
 
   console.log(`Application listening in port: ${port}`);
+  console.log(`env mode: ${process.env.NODE_ENV}`);
 }
 
 bootstrap();

@@ -3,7 +3,7 @@ import { utilities as nestWinstonModuleUtilities } from 'nest-winston';
 import { WinstonModuleOptions } from 'nest-winston';
 import * as WinstonCloudWatch from 'winston-cloudwatch';
 
-const isProduction = process.env.NODE_ENV === 'production';
+const isProduction = false; // process.env.NODE_ENV === 'production';
 
 export default {
   format: winston.format.colorize(),

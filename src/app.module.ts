@@ -19,11 +19,7 @@ import { AuthModule } from './modules/auth/auth.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: [
-        process.env.NODE_ENV && process.env.NODE_ENV == 'development'
-          ? `.env.${process.env.NODE_ENV}`
-          : '.env',
-      ],
+      envFilePath: [`.env.${process.env.NODE_ENV}`],
     }),
     WinstonModule.forRoot(winstonConfig),
     ServeStaticModule.forRoot({

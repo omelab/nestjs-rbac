@@ -1,18 +1,20 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import * as argon2 from 'argon2';
 import { CreateUserDto } from 'src/modules/users/dto/create-user.dto';
 import { UsersService } from 'src/modules/users/users.service';
-import * as argon2 from 'argon2';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { AuthDto } from './dto/auth.dto';
+import { hashData } from 'src/common/helper/hashData';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private usersService: UsersService,
-    private jwtService: JwtService,
-    private configService: ConfigService,
+    private readonly jwtService: JwtService,
+    private readonly usersService: UsersService,
+    private readonly configService: ConfigService,
   ) {}
+
   async signUp(createUserDto: CreateUserDto): Promise<any> {
     // Check if user exists
     const userExists = await this.usersService.findByUsername(
@@ -21,35 +23,39 @@ export class AuthService {
     if (userExists) {
       throw new BadRequestException('User already exists');
     }
-    // Hash password
-    const hash = await this.hashData(createUserDto.password);
-    const newUser = await this.usersService.create({
-      ...createUserDto,
-      password: hash,
-    });
+    // create users
+    const newUser = await this.usersService.create(createUserDto);
+
     const tokens = await this.getTokens(newUser.id, newUser.username);
     await this.updateRefreshToken(newUser.id, tokens.refreshToken);
+
     return tokens;
   }
+
   async signIn(data: AuthDto) {
     // Check if user exists
     const user = await this.usersService.findByUsername(data.username);
+
     if (!user) throw new BadRequestException('User does not exist');
+
     const passwordMatches = await argon2.verify(user.password, data.password);
+
     if (!passwordMatches)
       throw new BadRequestException('Password is incorrect');
+
     const tokens = await this.getTokens(user.id, user.username);
+
     await this.updateRefreshToken(user.id, tokens.refreshToken);
+
     return tokens;
   }
+
   async logout(userId: number) {
     return this.usersService.update(userId, { refreshToken: null });
   }
-  hashData(data: string) {
-    return argon2.hash(data);
-  }
+
   async updateRefreshToken(userId: number, refreshToken: string) {
-    const hashedRefreshToken = await this.hashData(refreshToken);
+    const hashedRefreshToken = await hashData(refreshToken);
     await this.usersService.update(userId, {
       refreshToken: hashedRefreshToken,
     });
@@ -62,7 +68,7 @@ export class AuthService {
           username,
         },
         {
-          secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
+          secret: this.configService.get<string>('JWT_SECRET_KEY'),
           expiresIn: '15m',
         },
       ),
