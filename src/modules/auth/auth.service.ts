@@ -16,13 +16,6 @@ export class AuthService {
   ) {}
 
   async signUp(createUserDto: CreateUserDto): Promise<any> {
-    // Check if user exists
-    const userExists = await this.usersService.findByUsername(
-      createUserDto.username,
-    );
-    if (userExists) {
-      throw new BadRequestException('User already exists');
-    }
     // create users
     const newUser = await this.usersService.create(createUserDto);
 

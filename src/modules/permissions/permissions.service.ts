@@ -1,26 +1,40 @@
 import { Injectable } from '@nestjs/common';
-import { CreatePermissionDto } from './dto/create-permission.dto';
-import { UpdatePermissionDto } from './dto/update-permission.dto';
+import { PrismaService } from 'src/modules/prisma/prisma.service';
+import { Permission, Prisma } from '@prisma/client';
 
 @Injectable()
 export class PermissionsService {
-  create(createPermissionDto: CreatePermissionDto) {
-    return 'This action adds a new permission';
+  constructor(private readonly prisma: PrismaService) {}
+
+  async findMany(): Promise<Permission[]> {
+    return this.prisma.permission.findMany();
   }
 
-  findAll() {
-    return `This action returns all permissions`;
+  async findOne(id: number): Promise<Permission | null> {
+    return this.prisma.permission.findUnique({
+      where: { id },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} permission`;
+  async create(data: Prisma.PermissionCreateInput): Promise<Permission> {
+    return this.prisma.permission.create({
+      data,
+    });
   }
 
-  update(id: number, updatePermissionDto: UpdatePermissionDto) {
-    return `This action updates a #${id} permission`;
+  async update(
+    id: number,
+    data: Prisma.PermissionUpdateInput,
+  ): Promise<Permission> {
+    return this.prisma.permission.update({
+      where: { id },
+      data,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} permission`;
+  async delete(id: number): Promise<Permission> {
+    return this.prisma.permission.delete({
+      where: { id },
+    });
   }
 }

@@ -7,33 +7,49 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-//suer schema
-model User {
-  id           Int      @id @default(autoincrement())
-  username     String   @unique
-  email        String   @unique
-  name         String?
-  password     String
-  refreshToken String?
-  roles        Role[]   @relation("UserRole")
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+model Permission {
+  id         Int      @id @default(autoincrement())
+  name       String @unique
+  moduleName String
+  roles      Role[]   @relation("RolePermission")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map(name: "permissions")
 }
 
 model Role {
   id          Int          @id @default(autoincrement())
-  name        String       @unique
+  name        String @unique
   description String?
+  permissions Permission[] @relation("RolePermission")
+  users       User[]       @relation("UserRole")
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
-  users       User[]       @relation("UserRole")
-  permissions Permission[] @relation("RolePermission")
+
+  @@map(name: "roles")
 }
 
-model Permission {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  role      Role[]   @relation("RolePermission")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model User {
+  id            Int          @id @default(autoincrement())
+  username      String       @unique
+  email         String       @unique
+  password      String
+  refreshToken  String?
+  name          String?
+  designation   Designation? @relation(fields: [designationId], references: [id])
+  designationId Int?
+  roles         Role[]       @relation("UserRole")
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@map(name: "users")
+}
+
+model Designation {
+  id    Int    @id @default(autoincrement())
+  title String
+  User  User[]
+
+  @@map(name: "designations")
 }

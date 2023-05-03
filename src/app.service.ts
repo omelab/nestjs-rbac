@@ -5,8 +5,8 @@ import { ConfigService } from '@nestjs/config';
 export class AppService {
   constructor(private readonly configService: ConfigService) {}
 
-  getHello(): string {
-    return 'Hello World!';
+  getWelcome(): string {
+    return 'Welcome to Study International CMS API!';
   }
 
   getSecretKey(): string {

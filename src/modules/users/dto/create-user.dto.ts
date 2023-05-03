@@ -1,12 +1,16 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
+  IsArray,
   IsEmail,
   IsNotEmpty,
   IsOptional,
   IsString,
   MinLength,
 } from 'class-validator';
+import { Injectable } from '@nestjs/common';
+import { Transform } from 'class-transformer';
 
+@Injectable()
 export class CreateUserDto {
   @ApiProperty()
   @IsString()
@@ -28,6 +32,19 @@ export class CreateUserDto {
   @IsOptional()
   @IsString()
   name: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  designationId: number;
+
+  @ApiPropertyOptional()
+  @Transform(({ value }) =>
+    Array.isArray(value)
+      ? value.map(Number)
+      : value.split`,`.map((x: any) => +x),
+  )
+  @IsArray()
+  roleIds: number[];
 
   @ApiProperty({ required: false })
   @IsOptional()

@@ -3,45 +3,47 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
+  Put,
 } from '@nestjs/common';
+
 import { PermissionsService } from './permissions.service';
+import { ApiTags } from '@nestjs/swagger';
+import { Permission } from '@prisma/client';
 import { CreatePermissionDto } from './dto/create-permission.dto';
 import { UpdatePermissionDto } from './dto/update-permission.dto';
-import { ApiTags } from '@nestjs/swagger';
 
 @Controller('permissions')
 @ApiTags('Permission')
 export class PermissionsController {
   constructor(private readonly permissionsService: PermissionsService) {}
 
-  @Post()
-  create(@Body() createPermissionDto: CreatePermissionDto) {
-    return this.permissionsService.create(createPermissionDto);
-  }
-
   @Get()
-  findAll() {
-    return this.permissionsService.findAll();
+  async findAll(): Promise<Permission[]> {
+    return this.permissionsService.findMany();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.permissionsService.findOne(+id);
+  async findOne(@Param('id') id: string): Promise<Permission | null> {
+    return this.permissionsService.findOne(Number(id));
   }
 
-  @Patch(':id')
-  update(
+  @Post()
+  async create(@Body() data: CreatePermissionDto): Promise<Permission> {
+    return this.permissionsService.create(data);
+  }
+
+  @Put(':id')
+  async update(
     @Param('id') id: string,
-    @Body() updatePermissionDto: UpdatePermissionDto,
-  ) {
-    return this.permissionsService.update(+id, updatePermissionDto);
+    @Body() data: UpdatePermissionDto,
+  ): Promise<Permission> {
+    return this.permissionsService.update(Number(id), data);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.permissionsService.remove(+id);
+  async delete(@Param('id') id: string): Promise<Permission> {
+    return this.permissionsService.delete(Number(id));
   }
 }
