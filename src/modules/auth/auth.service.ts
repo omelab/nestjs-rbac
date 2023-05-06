@@ -10,6 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { AuthDto } from './dto/auth.dto';
 import { hashData } from 'src/common/helper/hashData';
+import { excludeProperties } from 'src/common/helper/excludeProperties';
 
 @Injectable()
 export class AuthService {
@@ -35,7 +36,10 @@ export class AuthService {
 
   async signIn(data: AuthDto) {
     // Check if user exists
-    const user = await this.usersService.findByUsername(data.username);
+    const user = await this.usersService.findBy({
+      key: 'username',
+      value: data.username,
+    });
 
     if (!user) throw new BadRequestException('User does not exist');
 
@@ -52,7 +56,7 @@ export class AuthService {
   }
 
   async logout(userId: number) {
-    return this.usersService.update(userId, { refreshToken: null });
+    return this.usersService.updateRefreshToken(userId, null);
   }
 
   async updateRefreshToken(userId: number, refreshToken: string) {
@@ -69,7 +73,7 @@ export class AuthService {
         },
         {
           secret: this.configService.get<string>('JWT_SECRET_KEY'),
-          expiresIn: '15m',
+          expiresIn: '1h',
         },
       ),
       this.jwtService.signAsync(
@@ -106,10 +110,15 @@ export class AuthService {
   }
 
   async profile(userId: number) {
-    const user = await this.usersService.findOne(userId);
+    const user = await this.usersService.findBy({
+      key: 'id',
+      value: userId,
+    });
+
     if (!user || !user.refreshToken) {
       throw new ForbiddenException('Access Denied');
     }
-    return user;
+
+    return excludeProperties(user, ['password', 'refreshToken']);
   }
 }

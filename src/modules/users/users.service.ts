@@ -68,20 +68,6 @@ export class UsersService {
     return users;
   }
 
-  async getAll(): Promise<Omit<User, 'password'>[]> {
-    const users = await this.prismaService.user.findMany({
-      include: {
-        roles: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-      },
-    });
-    return users.map(({ password, ...rest }) => rest);
-  }
-
   async findOne(id: number): Promise<any> {
     return await this.prismaService.user.findUnique({
       where: { id },
@@ -100,10 +86,6 @@ export class UsersService {
         },
       },
     });
-  }
-
-  async findByUsername(username: string): Promise<User> {
-    return this.prismaService.user.findUnique({ where: { username } });
   }
 
   async update(id: number, data: UpdateUserDto): Promise<User> {
@@ -136,18 +118,42 @@ export class UsersService {
     });
   }
 
+  async remove(id: number): Promise<User> {
+    return await this.prismaService.user.delete({ where: { id } });
+  }
+
+  async findBy(data: any): Promise<User> {
+    const { key, value } = data;
+    return this.prismaService.user.findUnique({
+      where: { [key]: value },
+    });
+  }
+
+  async getAll(): Promise<Omit<User, 'password'>[]> {
+    const users = await this.prismaService.user.findMany({
+      include: {
+        roles: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+    return users.map(({ password, ...rest }) => rest);
+  }
+
   //update refresh token
-  async updateRefreshToken(id: number, refreshToken: string): Promise<any> {
+  async updateRefreshToken(
+    id: number,
+    refreshToken: string | null,
+  ): Promise<any> {
     return await this.prismaService.user.update({
       where: { id },
       data: {
         refreshToken,
       },
     });
-  }
-
-  async remove(id: number): Promise<User> {
-    return await this.prismaService.user.delete({ where: { id } });
   }
 
   hashData(data: string) {

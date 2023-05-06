@@ -1,12 +1,19 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Req,
+  UnauthorizedException,
+  UseGuards,
+} from '@nestjs/common';
 import { Request } from 'express';
 import { CreateUserDto } from 'src/modules/users/dto/create-user.dto';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto/auth.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
 import { RefreshTokenGuard } from 'src/common/guards/refreshToken.guard';
-import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from 'src/common/guards/jwtAuthGuard.guard';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -24,10 +31,12 @@ export class AuthController {
     return this.authService.signIn(data);
   }
 
-  @UseGuards(AccessTokenGuard)
+  @UseGuards(JwtAuthGuard)
   @Get('logout')
   logout(@Req() req: Request) {
-    this.authService.logout(req.user['sub']);
+    return req.user;
+
+    // this.authService.logout(req.user['sub']);
   }
 
   @UseGuards(RefreshTokenGuard)
@@ -38,10 +47,15 @@ export class AuthController {
     return this.authService.refreshTokens(userId, refreshToken);
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   @Get('profile')
   profile(@Req() req: Request) {
     const userId = req.user['sub'];
-    return this.authService.profile(userId);
+
+    if (userId) {
+      return this.authService.profile(userId);
+    }
+
+    throw new UnauthorizedException();
   }
 }
