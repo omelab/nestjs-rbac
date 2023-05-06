@@ -22,19 +22,24 @@ export class UserDto {
 export class UsersService {
   constructor(private prismaService: PrismaService) {}
 
-  async create(data: CreateUserDto): Promise<User> {
+  async create(data: CreateUserDto): Promise<any> {
     const { email, username } = data;
 
-    if (!(await isUnique('user', 'username', username))) {
+    if (username && !(await isUnique('user', 'username', username))) {
       throw new BadRequestException('Username already taken');
     }
 
-    if (!(await isUnique('user', 'email', email))) {
+    if (email && !(await isUnique('user', 'email', email))) {
       throw new BadRequestException('Email address is already taken');
     }
 
     //manager roles
-    const roleIds = data.roleIds;
+    const roles: any = {};
+    if (data.roleIds && data.roleIds.length > 0) {
+      roles.connect = data.roleIds.map((id) => ({ id }));
+    }
+
+    //remove roleId form data
     delete data.roleIds;
 
     // Hash password
@@ -44,9 +49,7 @@ export class UsersService {
     return await this.prismaService.user.create({
       data: {
         ...data,
-        roles: {
-          connect: roleIds.map((id) => ({ id })),
-        },
+        roles,
       },
     });
   }
@@ -103,32 +106,42 @@ export class UsersService {
     return this.prismaService.user.findUnique({ where: { username } });
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
-    const { email, username } = updateUserDto;
+  async update(id: number, data: UpdateUserDto): Promise<User> {
+    const { email, username } = data;
 
-    if (!(await isUnique('user', 'username', username, id))) {
+    if (username && !(await isUnique('user', 'username', username, id))) {
       throw new BadRequestException('Username already taken');
     }
 
-    if (!(await isUnique('user', 'email', email, id))) {
+    if (email && !(await isUnique('user', 'email', email, id))) {
       throw new BadRequestException('Email address is already taken');
     }
 
-    if (updateUserDto.password) {
-      updateUserDto.password = await this.hashData(updateUserDto.password);
+    if (data.password) {
+      data.password = await this.hashData(data.password);
     }
 
     //manager roles
-    const roleIds = updateUserDto.roleIds;
-    delete updateUserDto.roleIds;
+    const roles: any = {};
+    if (data.roleIds && data.roleIds.length > 0) {
+      roles.connect = data.roleIds.map((id) => ({ id }));
+    }
 
     return await this.prismaService.user.update({
       where: { id },
       data: {
-        ...updateUserDto,
-        roles: {
-          connect: roleIds.map((id) => ({ id })),
-        },
+        ...data,
+        roles,
+      },
+    });
+  }
+
+  //update refresh token
+  async updateRefreshToken(id: number, refreshToken: string): Promise<any> {
+    return await this.prismaService.user.update({
+      where: { id },
+      data: {
+        refreshToken,
       },
     });
   }

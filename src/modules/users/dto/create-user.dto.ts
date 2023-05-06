@@ -38,6 +38,7 @@ export class CreateUserDto {
   designationId: number;
 
   @ApiPropertyOptional()
+  @IsOptional()
   @Transform(({ value }) =>
     Array.isArray(value)
       ? value.map(Number)

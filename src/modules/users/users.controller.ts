@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseInterceptors,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -14,6 +15,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { SerializeInterceptor } from 'src/common/interceptor/serialize.interceptor';
 import { excludeProperties } from 'src/common/helper/excludeProperties';
+import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
 
 @Controller('users')
 @ApiTags('User')
@@ -39,16 +41,18 @@ export class UsersController {
     }
   }
 
+  @UseGuards(AccessTokenGuard)
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  async update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
     const user = await this.usersService.update(+id, updateUserDto);
     if (user.id) {
       return excludeProperties(user, ['refreshToken', 'password']);
     }
   }
 
+  @UseGuards(AccessTokenGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: number) {
     return this.usersService.remove(+id);
   }
 }

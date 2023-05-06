@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import * as argon2 from 'argon2';
 import { CreateUserDto } from 'src/modules/users/dto/create-user.dto';
 import { UsersService } from 'src/modules/users/users.service';
@@ -19,9 +23,13 @@ export class AuthService {
     // create users
     const newUser = await this.usersService.create(createUserDto);
 
+    //generate token
     const tokens = await this.getTokens(newUser.id, newUser.username);
+
+    //update refresh token
     await this.updateRefreshToken(newUser.id, tokens.refreshToken);
 
+    //return token
     return tokens;
   }
 
@@ -49,10 +57,9 @@ export class AuthService {
 
   async updateRefreshToken(userId: number, refreshToken: string) {
     const hashedRefreshToken = await hashData(refreshToken);
-    await this.usersService.update(userId, {
-      refreshToken: hashedRefreshToken,
-    });
+    await this.usersService.updateRefreshToken(userId, hashedRefreshToken);
   }
+
   async getTokens(userId: number, username: string) {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(
@@ -80,5 +87,29 @@ export class AuthService {
       accessToken,
       refreshToken,
     };
+  }
+
+  async refreshTokens(userId: number, refreshToken: string) {
+    const user = await this.usersService.findOne(userId);
+    if (!user || !user.refreshToken) {
+      throw new ForbiddenException('Access Denied');
+    }
+
+    const refreshTokenMatches = await argon2.verify(
+      user.refreshToken,
+      refreshToken,
+    );
+    if (!refreshTokenMatches) throw new ForbiddenException('Access Denied');
+    const tokens = await this.getTokens(user.id, user.username);
+    await this.updateRefreshToken(user.id, tokens.refreshToken);
+    return tokens;
+  }
+
+  async profile(userId: number) {
+    const user = await this.usersService.findOne(userId);
+    if (!user || !user.refreshToken) {
+      throw new ForbiddenException('Access Denied');
+    }
+    return user;
   }
 }
