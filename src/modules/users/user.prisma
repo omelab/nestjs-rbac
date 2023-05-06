@@ -1,6 +1,6 @@
 model Permission {
   id         Int      @id @default(autoincrement())
-  name       String @unique
+  name       String   @unique
   moduleName String
   roles      Role[]   @relation("RolePermission")
   createdAt  DateTime @default(now())
@@ -11,7 +11,7 @@ model Permission {
 
 model Role {
   id          Int          @id @default(autoincrement())
-  name        String @unique
+  name        String       @unique
   description String?
   permissions Permission[] @relation("RolePermission")
   users       User[]       @relation("UserRole")
@@ -33,14 +33,21 @@ model User {
   roles         Role[]       @relation("UserRole")
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
+  deletedAt     DateTime?
 
   @@map(name: "users")
 }
 
 model Designation {
-  id    Int    @id @default(autoincrement())
-  title String
-  User  User[]
+  id        Int           @id @default(autoincrement())
+  title     String
+  parentId  Int?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  deletedAt DateTime?
+  children  Designation[] @relation("SubDesignation")
+  parent    Designation?  @relation("SubDesignation", fields: [parentId], references: [id])
+  User      User[]
 
   @@map(name: "designations")
 }
