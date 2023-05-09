@@ -331,6 +331,12 @@ Now, any module that imports the PrismaModule will have access to PrismaService 
 
 With that out of the way, you are done setting up Prisma! You can now get to work on building the REST API.
 
+## Create Nest js Resources
+[nest g resource](https://docs.nestjs.com/recipes/crud-generator) command not only generates all the NestJS building blocks (module, service, controller classes) but also an entity class, DTO classes as well as the testing (.spec) files
+
+```js
+yarn nest g resource users
+```
 
 
 #### Help Links

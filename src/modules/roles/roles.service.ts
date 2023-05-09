@@ -19,7 +19,12 @@ export class RolesService {
           select: {
             id: true,
             name: true,
-            moduleName: true,
+            module: {
+              select: {
+                title: true,
+                id: true,
+              },
+            },
           },
         },
       },

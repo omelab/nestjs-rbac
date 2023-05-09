@@ -19,6 +19,11 @@ import { UpdatePermissionDto } from './dto/update-permission.dto';
 export class PermissionsController {
   constructor(private readonly permissionsService: PermissionsService) {}
 
+  @Post()
+  async create(@Body() data: CreatePermissionDto): Promise<Permission> {
+    return this.permissionsService.create(data);
+  }
+
   @Get()
   async findAll(): Promise<Permission[]> {
     return this.permissionsService.findMany();
@@ -27,11 +32,6 @@ export class PermissionsController {
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<Permission | null> {
     return this.permissionsService.findOne(Number(id));
-  }
-
-  @Post()
-  async create(@Body() data: CreatePermissionDto): Promise<Permission> {
-    return this.permissionsService.create(data);
   }
 
   @Put(':id')

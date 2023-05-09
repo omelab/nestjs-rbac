@@ -109,6 +109,8 @@ export class UsersService {
       roles.connect = data.roleIds.map((id) => ({ id }));
     }
 
+    delete data.roleIds;
+
     return await this.prismaService.user.update({
       where: { id },
       data: {

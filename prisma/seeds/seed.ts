@@ -9,6 +9,16 @@ async function main() {
   // create two dummy users
   const password = await hashData('123456');
 
+  const module = await prisma.module.upsert({
+    where: { title: 'user' },
+    update: {
+      title: 'user',
+    },
+    create: {
+      title: 'user',
+    },
+  });
+
   const permission = await prisma.permission.upsert({
     where: { name: 'user-create' },
     update: {
@@ -16,7 +26,7 @@ async function main() {
     },
     create: {
       name: 'user_create',
-      moduleName: 'user',
+      moduleId: module.id,
     },
   });
 

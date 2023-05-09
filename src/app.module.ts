@@ -14,6 +14,16 @@ import { PrismaModule } from './modules/prisma/prisma.module';
 import { RolesModule } from './modules/roles/roles.module';
 import { PermissionsModule } from './modules/permissions/permissions.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { DesignationModule } from './modules/designation/designation.module';
+import { ModuleModule } from './modules/module/module.module';
+import { CategoryModule } from './modules/category/category.module';
+import { TagModule } from './modules/tag/tag.module';
+import { MediaModule } from './modules/media/media.module';
+import { PageModule } from './modules/page/page.module';
+import { ContactModule } from './modules/contact/contact.module';
+import { EventModule } from './modules/event/event.module';
+import { AlbumModule } from './modules/album/album.module';
+import { GalleryModule } from './modules/gallery/gallery.module';
 
 @Module({
   imports: [
@@ -26,11 +36,21 @@ import { AuthModule } from './modules/auth/auth.module';
       rootPath: path.join(__dirname, '..', 'public'),
       exclude: ['/api*'],
     }),
-    UsersModule,
     PrismaModule,
+    AuthModule,
+    UsersModule,
     RolesModule,
     PermissionsModule,
-    AuthModule,
+    DesignationModule,
+    ModuleModule,
+    CategoryModule,
+    TagModule,
+    MediaModule,
+    PageModule,
+    ContactModule,
+    EventModule,
+    AlbumModule,
+    GalleryModule,
   ],
   providers: [
     AppService,
