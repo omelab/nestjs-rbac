@@ -11,10 +11,11 @@ import {
 import { ModuleService } from './module.service';
 import { CreateModuleDto } from './dto/create-module.dto';
 import { UpdateModuleDto } from './dto/update-module.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
-@ApiTags('Module')
-@Controller('module')
+@Controller('modules')
+@ApiTags('Modules')
+@ApiBearerAuth()
 export class ModuleController {
   constructor(private readonly moduleService: ModuleService) {}
 

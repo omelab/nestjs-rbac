@@ -11,4 +11,9 @@ export class CreateDesignationDto {
   @IsOptional()
   @IsNumber()
   parentId: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  slug: string;
 }
