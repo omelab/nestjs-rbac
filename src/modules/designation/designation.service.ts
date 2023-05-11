@@ -82,6 +82,13 @@ export class DesignationService {
   }
 
   async remove(id: number) {
-    return await this.prisma.designation.delete({ where: { id } });
+    // Remove the designation row
+    await this.prisma.designation.delete({ where: { id } });
+
+    // Update any associated user records to set their designationId to null
+    await this.prisma.user.updateMany({
+      where: { designationId: id },
+      data: { designationId: null },
+    });
   }
 }

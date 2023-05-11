@@ -41,14 +41,13 @@ export class UsersController {
   }
 
   @Get(':id')
-  @UseGuards(AccessTokenGuard, new PermissionGuard('edit_users'))
+  @UseGuards(AccessTokenGuard, new PermissionGuard('view_users'))
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(+id);
   }
 
-  // @UseGuards(AccessTokenGuard)
   @Patch(':id')
-  @UseGuards(AccessTokenGuard, new PermissionGuard('view_users'))
+  @UseGuards(AccessTokenGuard, new PermissionGuard('edit_users'))
   async update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
     const user = await this.usersService.update(+id, updateUserDto);
     if (user.id) {

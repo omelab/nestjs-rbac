@@ -82,6 +82,11 @@ export class UsersService {
           select: {
             id: true,
             name: true,
+            permissions: {
+              select: {
+                name: true,
+              },
+            },
           },
         },
       },

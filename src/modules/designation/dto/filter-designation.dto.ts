@@ -13,13 +13,13 @@ export class FilterDesignationDto {
   @Transform((val) => parseInt(val.value))
   parentId: number;
 
-  @ApiProperty()
-  @IsNotEmpty()
+  @ApiProperty({ required: false })
+  @IsOptional()
   @Transform((val) => parseInt(val.value))
   page: number;
 
-  @ApiProperty()
-  @IsNotEmpty()
+  @ApiProperty({ required: false })
+  @IsOptional()
   @Transform((val) => parseInt(val.value))
   limit: number;
 }

@@ -81,3 +81,115 @@ async findOne(@Param('id') id: string): Promise<Category> {
 }
 ```
 
+
+## Many-to-Many relationship between users and roles
+In a NestJS application using Prisma and PostgreSQL, you can create a many-to-many relationship between users and roles by defining a join table.
+
+1. Define your User and Role models in Prisma. For example, in your schema.prisma file:
+
+```bash
+model User {
+  id        Int     @id @default(autoincrement())
+  email     String  @unique
+  name      String
+  roles     Role[]  @relation("UserRoles")
+}
+
+model Role {
+  id        Int     @id @default(autoincrement())
+  name      String
+  users     User[]  @relation("UserRoles")
+}
+```
+
+2. Add a join table to represent the many-to-many relationship between users and roles. For example, in your schema.prisma file:
+
+```bash 
+
+model UserRole {
+  id        Int     @id @default(autoincrement())
+  userId    Int
+  roleId    Int
+  createdAt DateTime @default(now())
+
+  @@unique([userId, roleId])
+  @@index([userId])
+  @@index([roleId])
+  
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      Role    @relation(fields: [roleId], references: [id], onDelete: Cascade)
+}
+
+```
+
+3. Update your User and Role models to use the join table. In your User model:
+
+```bash
+model User {
+  id        Int        @id @default(autoincrement())
+  email     String     @unique
+  name      String
+  userRoles UserRole[] @relation("UserRoles")
+  roles     Role[]     @relation("UserRoles", fields: [userRoles], references: [roleId])
+}
+```
+
+In your Role model:
+
+```bash
+model Role {
+  id        Int        @id @default(autoincrement())
+  name      String
+  userRoles UserRole[] @relation("UserRoles")
+  users     User[]     @relation("UserRoles", fields: [userRoles], references: [userId])
+}
+```
+
+4. Generate Prisma client to create the tables in the database:
+
+```bash
+npx prisma generate
+```
+
+5. Migrate the database:
+
+```bash
+npx prisma migrate dev --name initial
+```
+
+Now you can use Prisma client to create and query users and roles with their respective many-to-many relationships.
+
+For example, to create a new user with roles:
+
+
+```js
+const user = await prisma.user.create({
+  data: {
+    email: 'john.doe@example.com',
+    name: 'John Doe',
+    roles: {
+      connect: [
+        { id: 1 }, // role ID 1
+        { id: 2 }, // role ID 2
+      ],
+    },
+  },
+});
+```
+
+And to query a user with their roles:
+
+```js
+const userWithRoles = await prisma.user.findUnique({
+  where: { id: 1 }, // user ID 1
+  include: { roles: true },
+});
+```
+
+
+For example, to delete a role with ID 1 and all related UserRole rows, you can use the Prisma client:
+```js
+const deletedRole = await prisma.role.delete({
+  where: { id: 1 },
+});
+```
