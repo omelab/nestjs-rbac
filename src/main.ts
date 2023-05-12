@@ -32,7 +32,7 @@ async function bootstrap() {
     const swaggerConfig = new DocumentBuilder()
       .setTitle(configService.get<string>('APP_NAME'))
       .setDescription(configService.get<string>('APP_DESCRIPTION'))
-      .setVersion(configService.get<string>('APP_DESCRIPTION'))
+      .setVersion(configService.get<string>('APP_VERSION'))
       .addBearerAuth()
       .build();
 

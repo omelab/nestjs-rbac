@@ -1,5 +1,0 @@
-PORT=7777
-DATABASE_URL="postgresql://abubakar:3458@localhost:5432/sicms?schema=public"
-
-JWT_REFRESH_SECRET = "jwt refresh tokey sectet"
-JWT_SECRET_KEY="jwt secret key here"
