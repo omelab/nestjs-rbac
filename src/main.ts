@@ -17,6 +17,7 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   const port: number = configService.get<number>('PORT');
 
+  app.setGlobalPrefix('api/v1');
   app.use(helmet());
   app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
 

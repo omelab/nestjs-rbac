@@ -33,7 +33,7 @@ import { GalleryModule } from './modules/gallery/gallery.module';
     }),
     WinstonModule.forRoot(winstonConfig),
     ServeStaticModule.forRoot({
-      rootPath: path.join(__dirname, '..', 'public'),
+      rootPath: path.join(__dirname, '../../', 'public'),
       exclude: ['/api*'],
     }),
     PrismaModule,

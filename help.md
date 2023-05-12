@@ -339,6 +339,24 @@ yarn nest g resource users
 ```
 
 
+## PM2 config
+
+To start a yarn dev process with a specific name using PM2, you can use the --name flag. Here's an example command:
+
+```bash
+pm2 start yarn --name my-app-dev -- run dev
+```
+
+If you want to stop or restart the process, you can use the pm2 stop and pm2 restart commands, respectively, followed by the process name. For example:
+
+```bash
+pm2 stop my-app-dev
+pm2 restart my-app-dev
+```
+
+
+
+
 #### Help Links
 [Nestjs/config](https://javascript.plainenglish.io/nestjs-how-to-store-read-and-validate-environment-variable-using-nestjs-config-40a5fa0702e4)
 
