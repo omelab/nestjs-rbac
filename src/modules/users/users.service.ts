@@ -163,6 +163,17 @@ export class UsersService {
     });
   }
 
+  //update profile picture
+  async updateProfilePic(data: any, id: number) {
+    return await this.prismaService.user.update({
+      where: { id },
+      data: {
+        picture: data.file,
+      },
+    });
+  }
+
+  //hasing string for password
   hashData(data: string) {
     return argon2.hash(data);
   }

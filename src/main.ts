@@ -74,8 +74,8 @@ async function bootstrap() {
   app.use(cookieParser());
   await app.listen(port);
 
-  console.log(`Application listening in port: ${port}`);
-  console.log(`env mode: ${process.env.NODE_ENV}`);
+  console.log(`Application runing on : http://localhost:${port}`);
+  console.log(`as ${process.env.NODE_ENV}`);
 }
 
 bootstrap();

@@ -32,6 +32,7 @@
     "@nestjs/serve-static": "^3.0.1",
     "@nestjs/swagger": "^6.3.0",
     "@prisma/client": "^4.14.0-integration-windows-portability.1",
+    "@types/multer": "^1.4.7",
     "argon2": "^0.30.3",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",

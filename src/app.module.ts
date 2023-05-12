@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { APP_PIPE } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
 import { ServeStaticModule } from '@nestjs/serve-static';
-import * as path from 'path';
+import { join } from 'path';
 import { WinstonModule } from 'nest-winston';
 import winstonConfig from 'src/config/winston';
 import { CustomValidationPipe } from 'src/common/pipes/custom-validation.pipe';
@@ -33,7 +33,7 @@ import { GalleryModule } from './modules/gallery/gallery.module';
     }),
     WinstonModule.forRoot(winstonConfig),
     ServeStaticModule.forRoot({
-      rootPath: path.join(__dirname, '../../', 'public'),
+      rootPath: join(__dirname, '../..', 'public'),
       exclude: ['/api*'],
     }),
     PrismaModule,

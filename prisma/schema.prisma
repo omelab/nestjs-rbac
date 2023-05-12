@@ -50,6 +50,7 @@ model User {
   password      String
   refreshToken  String?
   name          String?
+  picture       String?
   designation   Designation? @relation(fields: [designationId], references: [id])
   designationId Int?
   roles         Role[]       @relation("UserRole")
