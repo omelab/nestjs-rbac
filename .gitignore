@@ -1,6 +1,6 @@
 # compiled output
 /dist
-/public
+/public/uploads
 /node_modules
 /prisma/migrations
 
@@ -38,4 +38,4 @@ lerna-debug.log*
 
 .env
 .env.production
-.env* 
+.env*
